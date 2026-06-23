@@ -159,7 +159,7 @@ chmod +x arduino_q/setup_board.sh
 Activate the virtual environment and execute the script in **headless mode** (required for X11-free terminal sessions):
 ```bash
 source venv/bin/activate
-python main_tracking.py --camera /dev/video0 --headless
+python main_tracking.py --camera 1 --headless
 ```
 
 ---
@@ -170,7 +170,7 @@ You can pass arguments to customize the detection and tracking parameters:
 
 | Flag | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `--camera` | `str` | `0` | Camera device path (`/dev/video0`) or video file path. |
+| `--camera` | `str` | `0` | Camera device index (e.g. `0` for `/dev/video0`, `1` for `/dev/video1`) or video file path. |
 | `--model` | `str` | `yolov8s.pt` | Model weights: `yolov8n.pt` (faster CPU FPS) or `yolov8s.pt` (higher accuracy). |
 | `--conf` | `float`| `0.20` | Confidence threshold for trash/person detections. |
 | `--headless`| `bool` | `False` | Must be set to `--headless` when running on the board to prevent GUI crash. |
@@ -179,10 +179,10 @@ You can pass arguments to customize the detection and tracking parameters:
 To achieve the maximum possible FPS (frames per second) on the 4-core Qualcomm Kryo CPU, switch from the default `yolov8s.pt` model to the lightweight **YOLOv8 Nano** model:
 ```bash
 # In Native venv
-python main_tracking.py --camera /dev/video0 --headless --model yolov8n.pt
+python main_tracking.py --camera 1 --headless --model yolov8n.pt
 
 # If using Docker, edit docker-compose.yml command block:
-# command: ["--camera", "/dev/video0", "--model", "yolov8n.pt"]
+# command: ["--camera", "1", "--model", "yolov8n.pt"]
 ```
 
 ---
