@@ -13,11 +13,11 @@ services:
       - DISPLAY=${DISPLAY:-:0}
     devices:
       # Map the USB video device.
-      - /dev/video1:/dev/video1
+      - /dev/video2:/dev/video2
     volumes:
       # Persist the collected violations evidence on the host machine
       - ./Violations:/app/Violations
       # Mount X11 display socket
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
     # Default execution arguments (omit --headless to display GUI window on monitor)
-    command: ["--camera", "1", "--model", "yolov8s.pt"]
+    command: ["--camera", "2", "--model", "yolov8s.pt"]
