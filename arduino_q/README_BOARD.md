@@ -114,14 +114,23 @@ By default, Docker commands require `sudo`. Run the following to allow your curr
 
 Docker handles PyTorch compilation, OpenCV dependencies, and tracking requirements internally, ensuring they don't conflict with your board's system files.
 
-### 1. Build and Run the App
+### 1. Build and Run the App with GUI (on connected Monitor)
 From your project directory `/home/username/yolo_test`:
 
-```bash
-# Build the Docker image and start the container in the background
-docker compose -f arduino_q/docker-compose.yml up --build -d
-```
-*The image will build on the board, compile `lap`, cache packages, and start running.*
+1. **Allow Docker container to connect to your X11 graphical display** (run this on the board's terminal):
+   ```bash
+   xhost +local:docker
+   ```
+
+2. **Build and start the container**:
+   - To run in **foreground** (so the GUI window opens and closes when you press 'q'):
+     ```bash
+     docker compose -f arduino_q/docker-compose.yml up --build
+     ```
+   - To run in **background** (detached mode):
+     ```bash
+     docker compose -f arduino_q/docker-compose.yml up --build -d
+     ```
 
 ### 2. Monitoring and Troubleshooting
 - **View live tracking logs**:
@@ -134,8 +143,7 @@ docker compose -f arduino_q/docker-compose.yml up --build -d
   ```
 
 ### 3. Customizing the Configuration
-- **Camera Selection**: The default configurations mount `/dev/video0`. If your camera index is different, open [docker-compose.yml](file:///c:/Users/mukes/Documents/yolo_test/arduino_q/docker-compose.yml) and update:
-  - `devices`: change `/dev/video0:/dev/video0` to `/dev/video1:/dev/video0` (left side is host, right side is container).
+- **Camera Selection**: The default configurations mount `/dev/video1` to `/dev/video1`. If your camera index is different, open [docker-compose.yml](file:///c:/Users/mukes/Documents/yolo_test/arduino_q/docker-compose.yml) and update the `devices` mapping and `command` camera argument.
 - **Evidence Retrieval**: Captured violations are saved directly to the `/home/username/yolo_test/Violations` directory on the host board.
 
 ---
@@ -156,11 +164,12 @@ chmod +x arduino_q/setup_board.sh
 *This installs compiler dependencies (`gcc`, `g++`, `python3-dev`), sets up a virtual environment (`venv`), and runs `pip install`.*
 
 ### 2. Run the Application
-Activate the virtual environment and execute the script in **headless mode** (required for X11-free terminal sessions):
+Activate the virtual environment. Since you have a monitor connected to the Arduino Q, you can run it in **GUI mode** (omit the `--headless` flag):
 ```bash
 source venv/bin/activate
-python main_tracking.py --camera 1 --headless
+python main_tracking.py --camera 1
 ```
+*(If running headlessly via SSH later, append the `--headless` flag instead).*
 
 ---
 

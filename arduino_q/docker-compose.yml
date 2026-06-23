@@ -7,11 +7,17 @@ services:
       dockerfile: arduino_q/Dockerfile
     container_name: yolo_cctv_tracker
     restart: unless-stopped
+    network_mode: "host" # Allows container connection to local X server
+    ipc: host           # Performance boost for graphical applications
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
     devices:
       # Map the USB video device.
       - /dev/video1:/dev/video1
     volumes:
       # Persist the collected violations evidence on the host machine
       - ./Violations:/app/Violations
-    # Default execution arguments (runs headless by default via Dockerfile entrypoint)
+      # Mount X11 display socket
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+    # Default execution arguments (omit --headless to display GUI window on monitor)
     command: ["--camera", "1", "--model", "yolov8s.pt"]

@@ -38,6 +38,6 @@ COPY yolov8n.pt* yolov8s.pt* /app/
 # Expose a volume for the violation records (snapshots and clips)
 VOLUME /app/Violations
 
-# Set entrypoint to run in headless mode
-ENTRYPOINT ["python", "main_tracking.py", "--headless"]
-CMD ["--camera", "0", "--model", "yolov8s.pt"]
+# Set entrypoint to run the script (without hardcoding --headless)
+ENTRYPOINT ["python", "main_tracking.py"]
+CMD ["--camera", "1", "--model", "yolov8s.pt", "--headless"]
