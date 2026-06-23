@@ -27,6 +27,11 @@ def main():
         default=0.20, 
         help="Detection confidence threshold (default: 0.20)"
     )
+    parser.add_argument(
+        "--headless", 
+        action="store_true", 
+        help="Run in headless mode (no GUI windows)"
+    )
     args = parser.parse_args()
     
     # Parse source: if it's a number, convert to int for OpenCV camera index, otherwise keep as string path
@@ -201,15 +206,17 @@ def main():
             evidence_collector.trigger_violation(violation, annotated_frame)
             
         # Display window
-        cv2.imshow("AI Littering CCTV - Person & Garbage Tracking", annotated_frame)
-        
-        # Quit if 'q' key is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if not args.headless:
+            cv2.imshow("AI Littering CCTV - Person & Garbage Tracking", annotated_frame)
+            
+            # Quit if 'q' key is pressed
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
             
     # Clean up resources
     cap.release()
-    cv2.destroyAllWindows()
+    if not args.headless:
+        cv2.destroyAllWindows()
     print("CCTV Tracking stopped. Webcam and windows closed.")
 
 import math

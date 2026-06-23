@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  yolo-tracking:
+    build:
+      context: ..
+      dockerfile: arduino_q/Dockerfile
+    container_name: yolo_cctv_tracker
+    restart: unless-stopped
+    devices:
+      # Map the USB video device. Change /dev/video0 if your camera is at a different index (e.g. /dev/video1)
+      - /dev/video0:/dev/video0
+    volumes:
+      # Persist the collected violations evidence on the host machine
+      - ./Violations:/app/Violations
+    # Default execution arguments (runs headless by default via Dockerfile entrypoint)
+    command: ["--camera", "/dev/video0", "--model", "yolov8s.pt"]
