@@ -184,3 +184,65 @@ python main_tracking.py --camera /dev/video0 --headless --model yolov8n.pt
 # If using Docker, edit docker-compose.yml command block:
 # command: ["--camera", "/dev/video0", "--model", "yolov8n.pt"]
 ```
+
+---
+
+## 🛠️ Troubleshooting: Disk Space Issues ("No space left on device")
+
+On the Arduino Q, the system root partition `/` has only **9.8 GB** (with ~2.7 GB free), whereas `/home/arduino` has **18 GB** (with ~15 GB free). By default, Docker stores all cache, images, and containers in `/var/lib/docker/` (on the root `/` partition), causing package compilation or container builds to crash with:
+`ERROR: Could not install packages due to an OSError: [Errno 28] No space left on device`
+
+To fix this, move Docker's storage root to the larger `/home/arduino` partition using these steps:
+
+### Step 1: Stop the Docker Service
+```bash
+sudo systemctl stop docker docker.socket
+```
+
+### Step 2: Create a Storage Directory on the `/home` partition
+```bash
+sudo mkdir -p /home/arduino/docker
+```
+
+### Step 3: Configure Docker to use the new Storage Root
+Create or edit the Docker daemon configuration file `/etc/docker/daemon.json`:
+```bash
+sudo nano /etc/docker/daemon.json
+```
+Add the following configuration:
+```json
+{
+  "data-root": "/home/arduino/docker"
+}
+```
+*(Save the file and exit: `Ctrl+O`, `Enter`, `Ctrl+X` in nano).*
+
+### Step 4: Sync Existing Docker Data (Optional)
+If you want to keep any images/configurations you already downloaded:
+```bash
+sudo rsync -aP /var/lib/docker/ /home/arduino/docker/
+```
+
+### Step 5: Start Docker Service
+```bash
+sudo systemctl start docker
+```
+
+### Step 6: Verify and Clean Up
+1. Verify Docker is running on the new path:
+   ```bash
+   docker info | grep "Docker Root Dir"
+   ```
+   *It should output: `Docker Root Dir: /home/arduino/docker`*
+
+2. Clean up build caches and unused data to reclaim space on `/`:
+   ```bash
+   docker builder prune -a -f
+   docker system prune -a -f
+   ```
+
+3. If everything works, you can safely remove the old directory to free up space on `/`:
+   ```bash
+   sudo rm -rf /var/lib/docker
+   ```
+

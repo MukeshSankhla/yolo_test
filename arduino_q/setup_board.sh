@@ -32,12 +32,15 @@ source venv/bin/activate
 echo "Upgrading pip..."
 pip install --upgrade pip
 
-echo "Installing required Python packages from requirements.txt..."
+echo "Installing CPU-only PyTorch and torchvision..."
+pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+echo "Installing remaining Python packages from requirements.txt..."
 # Check path of requirements.txt relative to the execution context
 if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 elif [ -f "../requirements.txt" ]; then
-    pip install -r ../requirements.txt
+    pip install --no-cache-dir -r ../requirements.txt
 else
     echo "Error: requirements.txt not found!"
     exit 1

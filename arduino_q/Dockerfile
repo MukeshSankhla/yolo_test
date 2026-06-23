@@ -20,8 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy the requirements file
 COPY requirements.txt /app/requirements.txt
 
-# Install python dependencies
+# Install python dependencies (using CPU-only PyTorch to save ~2.2 GB of disk space)
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the python scripts
