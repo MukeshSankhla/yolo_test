@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     devices:
       # Map the USB video device. Change /dev/video0 if your camera is at a different index (e.g. /dev/video1)
-      - /dev/video1:/dev/video0
+      - /dev/video2:/dev/video0
     volumes:
       # Persist the collected violations evidence on the host machine
       - ./Violations:/app/Violations
