@@ -1,0 +1,13 @@
+{
+    "events": [
+        {
+            "event_id": "event_001",
+            "timestamp": "2026-06-24 10:04:57",
+            "offender_id": 1,
+            "item_class": "bottle",
+            "litter_track_id": 44,
+            "snapshot_file": "event_001.jpg",
+            "video_file": "event_001.mp4"
+        }
+    ]
+}
